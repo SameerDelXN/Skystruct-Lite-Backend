@@ -1,0 +1,31 @@
+import mongoose from "mongoose";
+const { Schema } = mongoose;
+
+const ProjectSchema = new Schema(
+  {
+    name: { type: String, required: true },
+    projectCode: { type: String, unique: true },
+    location: { type: String },
+    description: { type: String },
+    startDate: { type: Date },
+    endDate: { type: Date },
+    manager: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    engineers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    status: { type: String, enum: ["ongoing", "completed", "paused"], default: "ongoing" },
+    versionDetails: {
+      currentVersion: { type: String },
+      lastUpdated: { type: Date },
+      history: [
+        {
+          version: String,
+          updatedBy: { type: Schema.Types.ObjectId, ref: "User" },
+          updatedAt: Date,
+          notes: String
+        }
+      ]
+    }
+  },
+  { timestamps: true }
+);
+
+export default mongoose.models.Project || mongoose.model("Project", ProjectSchema);
