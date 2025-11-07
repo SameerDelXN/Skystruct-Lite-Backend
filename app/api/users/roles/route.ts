@@ -1,22 +1,42 @@
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
-import { getSession } from "@/lib/auth";
-import { isAdmin } from "@/utils/permissions";
-import { NextResponse } from "next/server";
+import Role from "@/models/Role";
 
-export async function PUT(req: Request) {
+export async function GET() {
   await dbConnect();
-  const admin = await getSession(req as any);
-  if (!admin || !isAdmin(admin.role))
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+  const roles = await Role.find({}).sort({ createdAt: -1 }).lean();
+  return NextResponse.json(roles);
+}
 
-  const { userId, newRole } = await req.json();
-  if (!userId || !newRole)
-    return NextResponse.json({ success: false, message: "User ID and new role required" }, { status: 400 });
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    await dbConnect();
 
-  const user = await User.findByIdAndUpdate(userId, { role: newRole }, { new: true }).select("-password");
-  if (!user)
-    return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+    const { name, slug, description, permissions, isSystem } = body;
 
-  return NextResponse.json({ success: true, message: "Role updated successfully", data: user });
+    if (!name)
+      return NextResponse.json({ error: "Role name is required" }, { status: 400 });
+
+    // Check if role already exists
+    const existing = await Role.findOne({ name });
+    if (existing)
+      return NextResponse.json({ error: "Role with this name already exists" }, { status: 409 });
+
+    const newRole = await Role.create({
+      name,
+      slug: slug || name.toLowerCase().replace(/\s+/g, "-"),
+      description: description || "",
+      permissions: permissions || [],
+      isSystem: isSystem || false,
+    });
+
+    return NextResponse.json(newRole, { status: 201 });
+  } catch (error: any) {
+    console.error("Role creation failed:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error", details: error.message },
+      { status: 500 }
+    );
+  }
 }
