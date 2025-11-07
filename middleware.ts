@@ -34,11 +34,11 @@ export async function middleware(req: NextRequest) {
     return NextResponse.json({ success: false, message: "Invalid or expired token" }, { status: 401 });
   }
 
-  // 🛠 Fix for old tokens with ObjectId buffer
+  // 🛠 Fix for ObjectId with binary buffer structure
   let userId = (decoded as any)._id;
   if (userId && typeof userId === "object" && userId.buffer) {
-    const byteArray = Object.values(userId.buffer); // ✅ Convert object to array
-    userId = Buffer.from(byteArray).toString("hex"); // ✅ Convert to ObjectId string
+    const byteArray = Object.values(userId.buffer) as number[]; // ✅ Explicitly cast
+    userId = Buffer.from(byteArray).toString("hex"); // ✅ Works perfectly now
   }
 
   console.log("✅ Decoded userId:", userId);

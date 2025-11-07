@@ -7,13 +7,17 @@ const UserSchema = new Schema(
     phone: { type: String },
     password: { type: String, required: true },
 
-    // Role reference (new system)
-   
+    // ✅ New Role Reference (RBAC support)
+    roleId: {
+      type: Schema.Types.ObjectId,
+      ref: "Role",
+      default: null,
+    },
 
-    // Legacy role field (for backward compatibility)
+    // ✅ Legacy field (for backward compatibility)
     role: {
       type: String,
-      // enum: ["admin", "manager", "engineer", "client"],
+      enum: ["admin", "manager", "engineer", "client"],
       default: "engineer",
     },
 
@@ -25,12 +29,13 @@ const UserSchema = new Schema(
     resetToken: { type: String },
     resetTokenExpire: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-// Migrate: if roleId exists, it takes precedence over role string
+// ✅ Virtual: Get human-readable role name
 UserSchema.virtual("roleName").get(function () {
-  if (this.populated("roleId") && this.roleId?.name) return this.roleId.name;
+  if (this.populated("roleId") && (this as any).roleId?.name)
+    return (this as any).roleId.name;
   return this.role;
 });
 

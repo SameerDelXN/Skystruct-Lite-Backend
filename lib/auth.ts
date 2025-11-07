@@ -18,15 +18,18 @@ export async function getSession(req: NextRequest) {
     console.log("🧩 Decoded payload:", decoded);
     if (!decoded) return null;
 
-    // 🛠 Fix for old tokens with ObjectId buffer structure
+    // 🛠 Fix for ObjectId buffer-based _id
     let userId = (decoded as any)._id;
+
     if (userId && typeof userId === "object" && userId.buffer) {
-      const byteArray = Object.values(userId.buffer);
-      userId = Buffer.from(byteArray).toString("hex"); // ✅ Convert to ObjectId string
+      // ✅ Cast safely to number[]
+      const byteArray = Array.from(userId.buffer as Uint8Array);
+      userId = Buffer.from(byteArray).toString("hex");
     }
 
     await dbConnect();
     const user = await User.findById(userId).select("-password");
+
     console.log("👤 Authenticated User:", user);
 
     if (!user) return null;
