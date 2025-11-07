@@ -6,11 +6,15 @@ import { isAdmin } from "@/utils/permissions";
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   await dbConnect();
+  
   const session = await getSession(req as any);
   if (!session)
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+  const {id} =  params;
+  console.log("asdf",params);
+  console.log("deasdfasdf",id);
 
-  const user = await User.findById(params.id).select("-password");
+  const user = await User.findById(id).select("-password");
   if (!user)
     return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
 
@@ -38,6 +42,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   await dbConnect();
+ 
   const session = await getSession(req as any);
   if (!session || !isAdmin(session.role))
     return NextResponse.json({ success: false, message: "Only admin can delete users" }, { status: 403 });

@@ -4,18 +4,37 @@ import dbConnect from "./dbConnect";
 import User from "@/models/User";
 
 export async function getSession(req: NextRequest) {
-  const authHeader = req.headers.get("authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
+  try {
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.warn("⚠️ No authorization header found");
+      return null;
+    }
 
-  const token = authHeader.split(" ")[1];
-  const decoded = verifyToken(token);
-  if (!decoded) return null;
+    const token = authHeader.split(" ")[1];
+    console.log("🪪 Token received:", token);
 
-  await dbConnect();
-  const user = await User.findById((decoded as any)._id).select("-password");
-  if (!user) return null;
+    const decoded = await verifyToken(token);
+    console.log("🧩 Decoded payload:", decoded);
+    if (!decoded) return null;
 
-  return user;
+    // 🛠 Fix for old tokens with ObjectId buffer structure
+    let userId = (decoded as any)._id;
+    if (userId && typeof userId === "object" && userId.buffer) {
+      const byteArray = Object.values(userId.buffer);
+      userId = Buffer.from(byteArray).toString("hex"); // ✅ Convert to ObjectId string
+    }
+
+    await dbConnect();
+    const user = await User.findById(userId).select("-password");
+    console.log("👤 Authenticated User:", user);
+
+    if (!user) return null;
+    return user;
+  } catch (error: any) {
+    console.error("❌ Error in getSession:", error.message);
+    return null;
+  }
 }
 
 export async function requireAuth(req: NextRequest) {

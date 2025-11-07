@@ -3,6 +3,7 @@ import User from "@/models/User";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { isAdmin } from "@/utils/permissions";
+import Role from "@/models/Role";
 
 export async function GET(req: Request) {
   await dbConnect();
@@ -18,16 +19,17 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   await dbConnect();
   const session = await getSession(req as any);
-
+console.log(session);
   if (!session || !isAdmin(session.role))
     return NextResponse.json({ success: false, message: "Only admin can create users" }, { status: 403 });
 
-  const { name, email, role, password } = await req.json();
+  const { name, email, roleId, password } = await req.json();
 
   const existing = await User.findOne({ email });
   if (existing)
     return NextResponse.json({ success: false, message: "User already exists" }, { status: 409 });
-
-  const user = await User.create({ name, email, role, password });
+const roledata= await Role.findById(roleId);
+  const user = await User.create({ name, email, role:roledata, password });  
+  console.log("user data",user);
   return NextResponse.json({ success: true, message: "User created successfully", data: user });
 }

@@ -21,7 +21,8 @@ export async function POST(req: Request) {
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) return NextResponse.json({ success: false, message: "Incorrect password" }, { status: 401 });
 
-  const token = signToken({ _id: user._id, role: user.role });
+  const token = await signToken({ _id: user._id, role: user.role });
+ 
   await createSession(user._id.toString());
 
   user.lastLogin = new Date();

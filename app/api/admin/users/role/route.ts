@@ -1,24 +1,42 @@
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
-import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
-import { isAdmin } from "@/utils/permissions";
+import Role from "@/models/Role";
 
-export async function PUT(req: Request) {
+export async function GET() {
   await dbConnect();
-  const session = await getSession(req as any);
+  const roles = await Role.find({}).sort({ createdAt: -1 }).lean();
+  return NextResponse.json(roles);
+}
 
-  if (!session || !isAdmin(session.role))
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    await dbConnect();
 
-  const { userId, newRole } = await req.json();
+    const { name, slug, description, permissions, isSystem } = body;
+    console.log(name)
+    if (!name)
+      return NextResponse.json({ error: "Role name is required" }, { status: 400 });
 
-  const user = await User.findById(userId);
-  if (!user)
-    return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
+    // Check if role already exists
+    const existing = await Role.findOne({ name });
+    if (existing)
+      return NextResponse.json({ error: "Role with this name already exists" }, { status: 409 });
 
-  user.role = newRole;
-  await user.save();
-
-  return NextResponse.json({ success: true, message: "User role updated successfully", data: user });
+    const newRole = await Role.create({
+      name,
+      slug: slug || name.toLowerCase().replace(/\s+/g, "-"),
+      description: description || "",
+      permissions: permissions || [],
+      isSystem: isSystem || false,
+    });
+console.log("created role",newRole);
+    return NextResponse.json(newRole, { status: 201 });
+  } catch (error: any) {
+    console.error("Role creation failed:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error", details: error.message },
+      { status: 500 }
+    );
+  }
 }
