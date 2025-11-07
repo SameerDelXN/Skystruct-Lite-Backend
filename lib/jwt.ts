@@ -40,7 +40,9 @@ export async function signToken(payload: any) {
 export async function verifyToken(token: string) {
   try {
     const cleanToken = token.replace(/^Bearer\s+/i, "");
+    console.log(cleanToken)
     const { payload } = await jwtVerify(cleanToken, JWT_SECRET);
+    console.log("✅ JWT verified:", payload);
     return payload;
   } catch (err: any) {
     console.error("❌ JWT verification failed:", err.message);

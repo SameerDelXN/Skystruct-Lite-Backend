@@ -8,29 +8,56 @@ export async function GET(req: Request) {
   await dbConnect();
   const session = await getSession(req as any);
 
-  if (!session || !canAccess(session.role, ["admin", "manager"]))
+  if (!session || !canAccess(session.role, ["admin", "manager"])) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+  }
 
-  const projects = await Project.find().populate("manager engineers").sort({ createdAt: -1 });
-  return NextResponse.json({ success: true, data: projects });
+  try {
+    const projects = await Project.find()
+      .populate("manager engineers projectType")
+      .sort({ createdAt: -1 });
+
+    return NextResponse.json({ success: true, data: projects });
+  } catch (error: any) {
+    console.error("Error fetching projects:", error.message);
+    return NextResponse.json({ success: false, message: "Failed to load projects" }, { status: 500 });
+  }
 }
 
 export async function POST(req: Request) {
   await dbConnect();
   const session = await getSession(req as any);
-  if (!session || !canAccess(session.role, ["admin", "manager"]))
+
+  if (!session || !canAccess(session.role, ["admin", "manager"])) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+  }
 
-  const body = await req.json();
-  const existing = await Project.findOne({ projectCode: body.projectCode });
-  if (existing)
-    return NextResponse.json({ success: false, message: "Project code already exists" }, { status: 400 });
+  try {
+    const body = await req.json();
 
-  const project = await Project.create({
-    ...body,
-    manager: session._id,
-    status: "ongoing",
-  });
+    if (!body.name || !body.projectType) {
+      return NextResponse.json({ success: false, message: "Project name and type are required" }, { status: 400 });
+    }
 
-  return NextResponse.json({ success: true, message: "Project created successfully", data: project }, { status: 201 });
+    const existing = await Project.findOne({ projectCode: body.projectCode });
+    if (existing) {
+      return NextResponse.json({ success: false, message: "Project code already exists" }, { status: 400 });
+    }
+
+    const project = await Project.create({
+      ...body,
+      manager: session._id,
+      status: "ongoing",
+    });
+
+    const populated = await Project.findById(project._id).populate("manager engineers projectType");
+
+    return NextResponse.json(
+      { success: true, message: "Project created successfully", data: populated },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    console.error("Error creating project:", error.message);
+    return NextResponse.json({ success: false, message: "Server error while creating project" }, { status: 500 });
+  }
 }

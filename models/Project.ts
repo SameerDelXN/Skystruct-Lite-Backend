@@ -9,9 +9,19 @@ const ProjectSchema = new Schema(
     description: { type: String },
     startDate: { type: Date },
     endDate: { type: Date },
+
+    // 👇 Link project type
+    projectType: { type: Schema.Types.ObjectId, ref: "ProjectType", required: true },
+
     manager: { type: Schema.Types.ObjectId, ref: "User", required: true },
     engineers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    status: { type: String, enum: ["ongoing", "completed", "paused"], default: "ongoing" },
+
+    status: {
+      type: String,
+      enum: ["ongoing", "completed", "paused"],
+      default: "ongoing",
+    },
+
     versionDetails: {
       currentVersion: { type: String },
       lastUpdated: { type: Date },
@@ -20,10 +30,10 @@ const ProjectSchema = new Schema(
           version: String,
           updatedBy: { type: Schema.Types.ObjectId, ref: "User" },
           updatedAt: Date,
-          notes: String
-        }
-      ]
-    }
+          notes: String,
+        },
+      ],
+    },
   },
   { timestamps: true }
 );

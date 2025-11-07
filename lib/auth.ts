@@ -15,24 +15,49 @@ export async function getSession(req: NextRequest) {
     console.log("🪪 Token received:", token);
 
     const decoded = await verifyToken(token);
-    console.log("🧩 Decoded payload:", decoded);
     if (!decoded) return null;
 
-    // 🛠 Fix for ObjectId buffer-based _id
+    // 🧩 Extract and normalize userId
     let userId = (decoded as any)._id;
+    console.log("🔍 Raw userId from token:", userId);
 
-    if (userId && typeof userId === "object" && userId.buffer) {
-      // ✅ Cast safely to number[]
-      const byteArray = Array.from(userId.buffer as Uint8Array);
-      userId = Buffer.from(byteArray).toString("hex");
+    // Case 1: userId is a simple string (normal)
+    if (typeof userId === "string") {
+      console.log("✅ userId is a string");
     }
 
+    // Case 2: userId = { buffer: { 0: 105, 1: 14, ... } }
+    else if (userId && typeof userId === "object" && userId.buffer) {
+      const bufferValues = Object.values(userId.buffer);
+      const buffer = Buffer.from(bufferValues as number[]);
+      userId = buffer.toString("hex");
+      console.log("🧠 Converted buffer userId →", userId);
+    }
+
+    // Case 3: userId = { type: 'Buffer', data: [105, 14, 40, ...] }
+    else if (userId && userId.type === "Buffer" && Array.isArray(userId.data)) {
+      const buffer = Buffer.from(userId.data);
+      userId = buffer.toString("hex");
+      console.log("🧠 Converted data userId →", userId);
+    }
+
+    // Case 4: Invalid format
+    else {
+      console.warn("⚠️ Unknown userId format, decoded:", userId);
+      return null;
+    }
+
+    // ✅ Ensure DB connection
     await dbConnect();
+
+    // ✅ Try fetching user
     const user = await User.findById(userId).select("-password");
+    if (!user) {
+      console.warn("❌ No user found with ID:", userId);
+      return null;
+    }
 
-    console.log("👤 Authenticated User:", user);
-
-    if (!user) return null;
+    console.log("👤 Authenticated User:", user.email || user.name);
     return user;
   } catch (error: any) {
     console.error("❌ Error in getSession:", error.message);
