@@ -9,16 +9,38 @@ export async function POST(req: Request) {
   const body = await req.json();
 
   const parsed = registerSchema.safeParse(body);
+
+  // ✅ Use `error.issues` instead of `error.errors`
   if (!parsed.success)
-    return NextResponse.json({ success: false, message: "Invalid data", errors: parsed.error.errors }, { status: 400 });
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Invalid data",
+        errors: parsed.error.issues, // ✅ Correct Zod property
+      },
+      { status: 400 }
+    );
 
   const { name, email, password, role } = parsed.data;
+
   const existingUser = await User.findOne({ email });
   if (existingUser)
-    return NextResponse.json({ success: false, message: "User already exists" }, { status: 400 });
+    return NextResponse.json(
+      { success: false, message: "User already exists" },
+      { status: 400 }
+    );
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await User.create({ name, email, password: hashedPassword, role });
 
-  return NextResponse.json({ success: true, message: "User registered successfully", data: user }, { status: 201 });
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+    role,
+  });
+
+  return NextResponse.json(
+    { success: true, message: "User registered successfully", data: user },
+    { status: 201 }
+  );
 }
