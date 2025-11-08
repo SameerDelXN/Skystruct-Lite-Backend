@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import "@/models/ProjectType"; // ✅ Add this line to register model first
 const { Schema } = mongoose;
 
 const ProjectSchema = new Schema(
@@ -10,18 +11,16 @@ const ProjectSchema = new Schema(
     startDate: { type: Date },
     endDate: { type: Date },
 
-    // 👇 Link project type
+    // ✅ Reference to ProjectType
     projectType: { type: Schema.Types.ObjectId, ref: "ProjectType", required: true },
 
     manager: { type: Schema.Types.ObjectId, ref: "User", required: true },
     engineers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-
     status: {
       type: String,
       enum: ["ongoing", "completed", "paused"],
       default: "ongoing",
     },
-
     versionDetails: {
       currentVersion: { type: String },
       lastUpdated: { type: Date },

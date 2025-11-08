@@ -3,9 +3,10 @@ import mongoose, { Schema } from "mongoose";
 const ProjectTypeSchema = new Schema(
   {
     name: { type: String, required: true, unique: true },
+    category: { type: String }, // e.g. Residential / Commercial
     description: { type: String },
-    category: { type: String, enum: ["Residential", "Commercial", "Industrial", "Infrastructure", "Educational", "Other"], default: "Other" },
     createdBy: { type: Schema.Types.ObjectId, ref: "User" },
+    isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

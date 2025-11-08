@@ -3,7 +3,7 @@ import Project from "@/models/Project";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { canAccess } from "@/utils/permissions";
-
+import ProjectType from "@/models/ProjectType";
 export async function GET(req: Request) {
   await dbConnect();
   const session = await getSession(req as any);

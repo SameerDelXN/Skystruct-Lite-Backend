@@ -5,6 +5,7 @@ const TaskSchema = new Schema(
   {
     projectId: { type: Schema.Types.ObjectId, ref: "Project", required: true },
     assignedTo: { type: Schema.Types.ObjectId, ref: "User" },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }, // ✅ NEW FIELD
     title: { type: String, required: true },
     description: { type: String },
     startDate: { type: Date },
