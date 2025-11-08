@@ -64,12 +64,12 @@ const PUBLIC_PATHS = [
   "/api/auth/password/forgot",
   "/api/auth/password/reset",
   "/api/utils/health",
-  "/api/auth/verfiy-email"
+  "/api/auth/verify-email"
 ];
 //sample
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
+  console.log("🌐 Incoming request to:", pathname);
   // ✅ Allow all CORS
   const corsHeaders = {
     "Access-Control-Allow-Origin": "*", // allow all origins
@@ -86,13 +86,15 @@ export async function middleware(req: NextRequest) {
   }
 
   // ✅ Skip authentication for public routes
-  const isPublic = PUBLIC_PATHS.some((path) => pathname.startsWith(path));
+  const isPublic = PUBLIC_PATHS.some((path) =>{ 
+    console.log(path)
+    pathname===path || pathname.startsWith(path + "/")});
   if (isPublic) {
     const res = NextResponse.next();
     Object.entries(corsHeaders).forEach(([key, value]) => res.headers.set(key, value));
     return res;
   }
-
+  console.log(isPublic)
   // ✅ Extract token
   const authHeader = req.headers.get("authorization");
   const cookieToken = req.cookies.get("app_session")?.value;
