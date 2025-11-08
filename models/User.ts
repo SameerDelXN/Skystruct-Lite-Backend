@@ -7,19 +7,17 @@ const UserSchema = new Schema(
     phone: { type: String },
     password: { type: String, required: true },
 
-    // ✅ New Role Reference (RBAC support)
-    roleId: {
-      type: Schema.Types.ObjectId,
-      ref: "Role",
-      default: null,
-    },
-
-    // ✅ Legacy field (for backward compatibility)
+    // ✅ Role Management
+    roleId: { type: Schema.Types.ObjectId, ref: "Role", default: null },
     role: {
       type: String,
       enum: ["admin", "manager", "engineer", "client"],
       default: "engineer",
     },
+
+    // ✅ New Email Verification Fields
+    isEmailVerified: { type: Boolean, default: false },
+    emailVerificationToken: { type: String, default: null },
 
     designation: { type: String },
     profileImage: { type: String },
@@ -32,7 +30,6 @@ const UserSchema = new Schema(
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
-// ✅ Virtual: Get human-readable role name
 UserSchema.virtual("roleName").get(function () {
   if (this.populated("roleId") && (this as any).roleId?.name)
     return (this as any).roleId.name;
