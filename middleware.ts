@@ -88,7 +88,7 @@ export async function middleware(req: NextRequest) {
   // ✅ Skip authentication for public routes
   const isPublic = PUBLIC_PATHS.some((path) =>{ 
     console.log(path)
-    pathname===path || pathname.startsWith(path + "/")});
+   return pathname===path || pathname.startsWith(path + "/")});
   if (isPublic) {
     const res = NextResponse.next();
     Object.entries(corsHeaders).forEach(([key, value]) => res.headers.set(key, value));
