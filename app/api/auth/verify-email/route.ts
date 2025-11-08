@@ -22,7 +22,7 @@
 
 //   return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/verified`);
 // }
-
+//sample
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 import { NextResponse } from "next/server";
