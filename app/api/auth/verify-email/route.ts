@@ -23,7 +23,6 @@
 //   return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/verified`);
 // }
 
-
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 import { NextResponse } from "next/server";
@@ -82,7 +81,7 @@ function getSuccessHTML() {
         
         body {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: #f0f4f8;
           min-height: 100vh;
           display: flex;
           align-items: center;
@@ -92,13 +91,13 @@ function getSuccessHTML() {
         
         .container {
           background: white;
-          border-radius: 24px;
-          padding: 60px 40px;
-          max-width: 500px;
+          border-radius: 16px;
+          padding: 48px 32px;
+          max-width: 440px;
           width: 100%;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
           text-align: center;
-          animation: slideUp 0.6s ease-out;
+          animation: slideUp 0.5s ease-out;
         }
         
         @keyframes slideUp {
@@ -113,15 +112,14 @@ function getSuccessHTML() {
         }
         
         .checkmark-circle {
-          width: 80px;
-          height: 80px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          width: 64px;
+          height: 64px;
+          background: #3b82f6;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 auto 30px;
-          animation: scaleIn 0.5s ease-out 0.2s both;
+          margin: 0 auto 24px;
         }
         
         @keyframes scaleIn {
@@ -134,61 +132,42 @@ function getSuccessHTML() {
         }
         
         .checkmark {
-          width: 35px;
-          height: 35px;
-          border: 4px solid white;
+          width: 28px;
+          height: 28px;
+          border: 3px solid white;
           border-top: none;
           border-right: none;
           transform: rotate(-45deg);
-          animation: checkmark 0.4s ease-out 0.4s both;
-        }
-        
-        @keyframes checkmark {
-          from {
-            width: 0;
-            height: 0;
-          }
-          to {
-            width: 35px;
-            height: 35px;
-          }
         }
         
         h1 {
-          font-size: 32px;
-          font-weight: 700;
-          color: #1a202c;
-          margin-bottom: 16px;
-          letter-spacing: -0.5px;
+          font-size: 28px;
+          font-weight: 600;
+          color: #1e293b;
+          margin-bottom: 12px;
         }
         
         p {
-          font-size: 16px;
-          color: #718096;
+          font-size: 15px;
+          color: #64748b;
           line-height: 1.6;
-          margin-bottom: 32px;
+          margin-bottom: 28px;
         }
         
         .button {
           display: inline-block;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: #3b82f6;
           color: white;
           text-decoration: none;
-          padding: 14px 32px;
-          border-radius: 12px;
-          font-weight: 600;
-          font-size: 16px;
-          transition: transform 0.2s, box-shadow 0.2s;
-          box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+          padding: 12px 28px;
+          border-radius: 8px;
+          font-weight: 500;
+          font-size: 15px;
+          transition: background 0.2s;
         }
         
         .button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
-        
-        .button:active {
-          transform: translateY(0);
+          background: #2563eb;
         }
         
         @media (max-width: 480px) {
@@ -237,7 +216,7 @@ function getErrorHTML(message: string) {
         
         body {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          background: #f0f4f8;
           min-height: 100vh;
           display: flex;
           align-items: center;
@@ -247,13 +226,13 @@ function getErrorHTML(message: string) {
         
         .container {
           background: white;
-          border-radius: 24px;
-          padding: 60px 40px;
-          max-width: 500px;
+          border-radius: 16px;
+          padding: 48px 32px;
+          max-width: 440px;
           width: 100%;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
           text-align: center;
-          animation: slideUp 0.6s ease-out;
+          animation: slideUp 0.5s ease-out;
         }
         
         @keyframes slideUp {
@@ -268,15 +247,14 @@ function getErrorHTML(message: string) {
         }
         
         .error-circle {
-          width: 80px;
-          height: 80px;
-          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          width: 64px;
+          height: 64px;
+          background: #ef4444;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 auto 30px;
-          animation: scaleIn 0.5s ease-out 0.2s both;
+          margin: 0 auto 24px;
         }
         
         @keyframes scaleIn {
@@ -289,8 +267,8 @@ function getErrorHTML(message: string) {
         }
         
         .error-x {
-          width: 40px;
-          height: 40px;
+          width: 32px;
+          height: 32px;
           position: relative;
         }
         
@@ -298,12 +276,12 @@ function getErrorHTML(message: string) {
         .error-x::after {
           content: '';
           position: absolute;
-          width: 4px;
-          height: 40px;
+          width: 3px;
+          height: 32px;
           background: white;
           border-radius: 2px;
           top: 0;
-          left: 18px;
+          left: 14px;
         }
         
         .error-x::before {
@@ -315,36 +293,33 @@ function getErrorHTML(message: string) {
         }
         
         h1 {
-          font-size: 32px;
-          font-weight: 700;
-          color: #1a202c;
-          margin-bottom: 16px;
-          letter-spacing: -0.5px;
+          font-size: 28px;
+          font-weight: 600;
+          color: #1e293b;
+          margin-bottom: 12px;
         }
         
         p {
-          font-size: 16px;
-          color: #718096;
+          font-size: 15px;
+          color: #64748b;
           line-height: 1.6;
-          margin-bottom: 32px;
+          margin-bottom: 28px;
         }
         
         .button {
           display: inline-block;
-          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          background: #ef4444;
           color: white;
           text-decoration: none;
-          padding: 14px 32px;
-          border-radius: 12px;
-          font-weight: 600;
-          font-size: 16px;
-          transition: transform 0.2s, box-shadow 0.2s;
-          box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+          padding: 12px 28px;
+          border-radius: 8px;
+          font-weight: 500;
+          font-size: 15px;
+          transition: background 0.2s;
         }
         
         .button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+          background: #dc2626;
         }
         
         @media (max-width: 480px) {
