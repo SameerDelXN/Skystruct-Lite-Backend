@@ -64,6 +64,7 @@ const PUBLIC_PATHS = [
   "/api/auth/password/forgot",
   "/api/auth/password/reset",
   "/api/utils/health",
+  "/api/auth/verfiy-email"
 ];
 
 export async function middleware(req: NextRequest) {
