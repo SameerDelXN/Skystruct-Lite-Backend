@@ -13,7 +13,6 @@ const ProjectSchema = new Schema(
     projectImages:{type:String},
     projectDocuments:[{type:String}],
 
-    // ✅ Reference to ProjectType
     projectType: { type: Schema.Types.ObjectId, ref: "ProjectType", required: true },
 
     manager: { type: Schema.Types.ObjectId, ref: "User", required: true },
