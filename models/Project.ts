@@ -10,6 +10,7 @@ const ProjectSchema = new Schema(
     description: { type: String },
     startDate: { type: Date },
     endDate: { type: Date },
+    projectImages:[{type:String}],
 
     // ✅ Reference to ProjectType
     projectType: { type: Schema.Types.ObjectId, ref: "ProjectType", required: true },
