@@ -66,7 +66,7 @@ const PUBLIC_PATHS = [
   "/api/utils/health",
   "/api/auth/verfiy-email"
 ];
-
+//sample
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
