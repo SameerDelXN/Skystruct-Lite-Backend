@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   await dbConnect();
-
+//sample
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
 
