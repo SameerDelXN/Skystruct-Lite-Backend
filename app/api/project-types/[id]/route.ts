@@ -7,6 +7,7 @@ import { isAdmin } from "@/utils/permissions";
 // ✅ GET Single Project Type
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   await dbConnect();
+  
 
   try {
     const type = await ProjectType.findById(params.id);
