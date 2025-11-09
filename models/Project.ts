@@ -15,6 +15,7 @@ const ProjectSchema = new Schema(
     clientName: {type:String},
    clientEmail: {type:String},
     clientPhone: {type:Number, unique:true},
+    budget:{type:Number},
 
 
     projectType: { type: Schema.Types.ObjectId, ref: "ProjectType", required: true },
