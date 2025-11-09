@@ -406,3 +406,22 @@ export async function POST(req: Request) {
     );
   }
 }
+export async function GET(req: Request) {
+  await dbConnect();
+  const session = await getSession(req as any);
+
+  if (!session || !canAccess(session.role, ["admin", "manager"])) {
+    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+  }
+
+  try {
+    const projects = await Project.find()
+      .populate("manager engineers projectType")
+      .sort({ createdAt: -1 });
+
+    return NextResponse.json({ success: true, data: projects });
+  } catch (error: any) {
+    console.error("Error fetching projects:", error.message);
+    return NextResponse.json({ success: false, message: "Failed to load projects" }, { status: 500 });
+  }
+}
