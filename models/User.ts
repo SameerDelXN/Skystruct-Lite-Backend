@@ -7,8 +7,7 @@ const UserSchema = new Schema(
     phone: { type: String },
     password: { type: String, required: true },
 
-    // ✅ Role Management
-    roleId: { type: Schema.Types.ObjectId, ref: "Role", default: null },
+    
     role: {
       type: String,
       enum: ["admin", "manager", "engineer", "client"],

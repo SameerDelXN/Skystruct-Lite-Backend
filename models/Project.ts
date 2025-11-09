@@ -12,6 +12,10 @@ const ProjectSchema = new Schema(
     endDate: { type: Date },
     projectImages:{type:String},
     projectDocuments:[{type:String}],
+    clientName: {type:String},
+   clientEmail: {type:String},
+    clientPhone: {type:Number, unique:true},
+
 
     // ✅ Reference to ProjectType
     projectType: { type: Schema.Types.ObjectId, ref: "ProjectType", required: true },
@@ -38,5 +42,6 @@ const ProjectSchema = new Schema(
   },
   { timestamps: true }
 );
+delete mongoose.models.Project;
 
 export default mongoose.models.Project || mongoose.model("Project", ProjectSchema);
