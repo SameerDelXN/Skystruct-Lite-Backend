@@ -17,7 +17,6 @@ const ProjectSchema = new Schema(
     clientPhone: {type:Number, unique:true},
 
 
-    // ✅ Reference to ProjectType
     projectType: { type: Schema.Types.ObjectId, ref: "ProjectType", required: true },
 
     manager: { type: Schema.Types.ObjectId, ref: "User", required: true },
