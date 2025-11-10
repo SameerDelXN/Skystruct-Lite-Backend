@@ -29,7 +29,7 @@ console.log(session);
   if (existing)
     return NextResponse.json({ success: false, message: "User already exists" }, { status: 409 });
 const roledata= await Role.findById(roleId);
-  const user = await User.create({ name, email, role:roledata, password });  
+  const user = await User.create({ name, email, role:roledata.name, password });  
   console.log("user data",user);
   return NextResponse.json({ success: true, message: "User created successfully", data: user });
 }
