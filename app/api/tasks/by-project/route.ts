@@ -11,7 +11,7 @@ export async function GET(req: Request) {
   // 🛡️ Authentication
   if (!session)
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-
+//sample
   // ✅ Get projectId from query string
   const { searchParams } = new URL(req.url);
   const projectId = searchParams.get("projectId");
