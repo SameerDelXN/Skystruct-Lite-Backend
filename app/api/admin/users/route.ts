@@ -23,13 +23,13 @@ console.log(session);
   if (!session || !isAdmin(session.role))
     return NextResponse.json({ success: false, message: "Only admin can create users" }, { status: 403 });
 
-  const { name, email, roleId, password } = await req.json();
+  const { name, email, roleId, password,assignedProjects } = await req.json();
 
   const existing = await User.findOne({ email });
   if (existing)
     return NextResponse.json({ success: false, message: "User already exists" }, { status: 409 });
 const roledata= await Role.findById(roleId);
-  const user = await User.create({ name, email, role:roledata.name, password });  
+  const user = await User.create({ name, email, role:roledata.name, password,assignedProjects });  
   console.log("user data",user);
   return NextResponse.json({ success: true, message: "User created successfully", data: user });
 }
