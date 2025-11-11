@@ -1,28 +1,20 @@
-import mongoose, { Schema } from "mongoose";
-
+import mongoose, { Schema, models, model } from "mongoose";
+import Material from "./Material";
 const TransactionSchema = new Schema(
   {
     projectId: { type: Schema.Types.ObjectId, ref: "Project", required: true },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-
-    // Type of transaction (extended for UI)
     type: {
       type: String,
       enum: ["purchase", "expense", "payment_in", "payment_out", "invoice", "debit_note"],
       required: true,
     },
-
-    // Purchase or invoice fields
-    vendorName: { type: String },
-    invoiceNumber: { type: String },
-    invoiceDate: { type: Date },
-
-    // Payment fields
+    vendorName: String,
+    invoiceNumber: String,
+    invoiceDate: Date,
     paymentMode: { type: String, enum: ["cash", "bank_transfer", "upi", "cheque"], default: "cash" },
-    referenceNumber: { type: String },
-    paymentDate: { type: Date },
-
-    // Linked material (for purchase/consumption)
+    referenceNumber: String,
+    paymentDate: Date,
     materialId: { type: Schema.Types.ObjectId, ref: "Material" },
     items: [
       {
@@ -33,25 +25,17 @@ const TransactionSchema = new Schema(
         remarks: String,
       },
     ],
-
-    // Financial data
     amount: { type: Number, required: true },
     currency: { type: String, default: "INR" },
-
-    // Documents and notes
     documents: [{ type: String }],
-    remarks: { type: String },
-
-    // Status workflow
+    remarks: String,
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
     approvedBy: { type: Schema.Types.ObjectId, ref: "User" },
-    approvedAt: { type: Date },
-
-    // Consumption Limit tracking
+    approvedAt: Date,
     consumptionLimit: {
       limitSetBy: { type: Schema.Types.ObjectId, ref: "User" },
       limitValue: Number,
@@ -60,6 +44,8 @@ const TransactionSchema = new Schema(
   },
   { timestamps: true }
 );
+delete mongoose.models.Transaction;
+// ✅ Always use `models.Transaction` check
+const Transaction = models.Transaction || model("Transaction", TransactionSchema);
 
-export default mongoose.models.Transaction || mongoose.model("Transaction", TransactionSchema);
-//sample
+export default Transaction;
