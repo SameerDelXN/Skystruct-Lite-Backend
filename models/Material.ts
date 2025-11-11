@@ -10,6 +10,7 @@ const MaterialSchema = new Schema(
     quantity: { type: Number, required: true },
     purchaseDate: { type: Date, default: Date.now },
     vendorName: { type: String },
+    hsnCode:{type:String},
     invoiceUrl: { type: String },
     remarks: { type: String },
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
