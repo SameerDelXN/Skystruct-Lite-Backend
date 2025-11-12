@@ -9,14 +9,34 @@ export async function GET(req: Request) {
   await dbConnect();
   const session = await getSession(req as any);
 
-  if (!session || !canAccess(session.role, ["admin", "manager"]))
+  if (!session || !canAccess(session.role, ["admin", "manager", "engineer"])) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+  }
 
-  const materials = await Material.find()
-    .populate("projectId addedBy approvedBy")
-    .sort({ createdAt: -1 });
+  try {
+    // ✅ Extract `projectId` from URL query params
+    const { searchParams } = new URL(req.url);
+    const projectId = searchParams.get("projectId");
 
-  return NextResponse.json({ success: true, data: materials });
+    // ✅ Build query conditionally
+    const filter = projectId ? { projectId } : {};
+
+    const materials = await Material.find(filter)
+      .populate("projectId addedBy approvedBy")
+      .sort({ createdAt: -1 });
+
+    return NextResponse.json({
+      success: true,
+      count: materials.length,
+      data: materials,
+    });
+  } catch (error) {
+    console.error("Error fetching materials:", error);
+    return NextResponse.json(
+      { success: false, message: "Server error while fetching materials" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(req: Request) {
