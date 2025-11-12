@@ -29,8 +29,8 @@ export async function POST(req: Request) {
   if (!session)
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
 
-  const { name, projectId, parentFolderId } = await req.json();
-
+  const { name, projectId, parentFolderId,fileUrls } = await req.json();
+console.log("proehcasdfa",projectId);
   if (projectId) {
     const project = await Project.findById(projectId);
     if (!project)
@@ -42,6 +42,7 @@ export async function POST(req: Request) {
     projectId,
     parentFolderId: parentFolderId || null,
     createdBy: session._id,
+    fileUrls
   });
 
   return NextResponse.json({ success: true, message: "Folder created successfully", data: folder });

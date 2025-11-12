@@ -6,6 +6,7 @@ export interface IFolder extends Document {
   parentFolderId?: mongoose.Types.ObjectId | null;
   createdBy: mongoose.Types.ObjectId;
   path: string[];
+  fileUrls:string[];
   sharedWith: {
     userId: mongoose.Types.ObjectId;
     permission: "view" | "edit";
@@ -20,7 +21,7 @@ const FolderSchema = new Schema<IFolder>(
     projectId: { type: Schema.Types.ObjectId, ref: "Project" },
     parentFolderId: { type: Schema.Types.ObjectId, ref: "Folder", default: null },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-
+    fileUrls:[{type:String}],
     path: {
       type: [String],
       default: [],
