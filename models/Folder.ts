@@ -21,7 +21,7 @@ const FolderSchema = new Schema<IFolder>(
     projectId: { type: Schema.Types.ObjectId, ref: "Project" },
     parentFolderId: { type: Schema.Types.ObjectId, ref: "Folder", default: null },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    fileUrls:[{type:String}],
+    fileUrls:[{type:Object}],
     path: {
       type: [String],
       default: [],

@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
 
   const { name, projectId, parentFolderId,fileUrls } = await req.json();
-console.log("proehcasdfa",projectId);
+console.log(projectId)
   if (projectId) {
     const project = await Project.findById(projectId);
     if (!project)
