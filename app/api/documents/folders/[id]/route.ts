@@ -22,26 +22,43 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
 
 export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   await dbConnect();
+
   const session = await getSession(req as any);
   if (!session)
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
 
-  const { id } = await context.params; // ✅ unwrap Promise
+  const { id } = await context.params; // unwrap params
 
   const folder = await Folder.findById(id);
   if (!folder)
     return NextResponse.json({ success: false, message: "Folder not found" }, { status: 404 });
 
-  const { name } = await req.json();
-  folder.name = name;
+  // Extract file object from body
+  const { mimeType, name, url } = await req.json();
+
+  if (!mimeType || !name || !url) {
+    return NextResponse.json({
+      success: false,
+      message: "Missing file object fields",
+    }, { status: 400 });
+  }
+
+  // Push new file object
+  folder.fileUrls.push({
+    mimeType,
+    name,
+    url
+  });
+
   await folder.save();
 
   return NextResponse.json({
     success: true,
-    message: "Folder renamed successfully",
+    message: "File added successfully",
     data: folder,
   });
 }
+
 
 export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   await dbConnect();
