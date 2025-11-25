@@ -58,7 +58,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
     data: folder,
   });
 }
-
+7
 
 export async function DELETE(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   await dbConnect();

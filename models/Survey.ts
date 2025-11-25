@@ -4,9 +4,11 @@ const { Schema } = mongoose;
 const SurveySchema = new Schema(
   {
     projectId: { type: Schema.Types.ObjectId, ref: "Project", required: true },
+    surveyType:{type:String},
+    surveyDate:{type:String},
+    assignContractor:{type:String},
     requestedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     approvedBy: { type: Schema.Types.ObjectId, ref: "User" },
-    title: { type: String, required: true },
     description: { type: String },
     documents: [{ type: String }],
     comments: [
@@ -16,7 +18,7 @@ const SurveySchema = new Schema(
         timestamp: { type: Date, default: Date.now }
       }
     ],
-    status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+    status: { type: String,  default: "pending" },
     rejectionReason: { type: String },
     approvedAt: { type: Date }
   },

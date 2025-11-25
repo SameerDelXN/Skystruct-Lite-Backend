@@ -3,12 +3,12 @@ import Survey from "@/models/Survey";
 import Project from "@/models/Project";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { canAccess } from "@/utils/permissions";
+
 
 export async function GET(req: Request) {
   await dbConnect();
   const session = await getSession(req as any);
-  if (!session || !canAccess(session.role, ["admin", "manager"]))
+  if (!session)
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
 
   const surveys = await Survey.find()
