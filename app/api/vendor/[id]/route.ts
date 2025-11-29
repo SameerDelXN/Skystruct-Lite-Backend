@@ -1,26 +1,19 @@
-// app/api/vendors/[id]/route.ts
-
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/dbConnect";
 import Vendor from "@/models/Vendor";
 import mongoose from "mongoose";
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
-
-
-
 // =====================
 // PUT /api/vendors/:id
 // =====================
-export async function PUT(req: NextRequest, { params }: RouteParams) {
+export async function PUT(
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await dbConnect();
 
-    const { id } = params;
+    const { id } = await context.params; // ✅ REQUIRED IN NEXT.JS 15+
 
     if (!mongoose.isValidObjectId(id)) {
       return NextResponse.json(
@@ -31,17 +24,15 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
 
     const updates = await req.json();
 
-    // Allowed fields to update
     const allowed = ["name", "email", "vendorcode", "gstinno", "address"];
     const filtered: Record<string, any> = {};
 
-    for (const field of allowed) {
+    allowed.forEach((field) => {
       if (updates[field] !== undefined) {
         filtered[field] = updates[field];
       }
-    }
+    });
 
-    // Update vendor
     const updatedVendor = await Vendor.findByIdAndUpdate(id, filtered, {
       new: true,
       runValidators: true,
@@ -61,6 +52,7 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
   } catch (error: any) {
     console.error("PUT /api/vendors/:id error:", error);
 
+    // Duplicate key error
     if (error.code === 11000) {
       const duplicateKey = Object.keys(error.keyValue || {}).join(", ");
       return NextResponse.json(
@@ -79,11 +71,14 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
 // ========================
 // DELETE /api/vendors/:id
 // ========================
-export async function DELETE(_req: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  _req: NextRequest,
+  context: { params: Promise<{ id: string }> }
+) {
   try {
     await dbConnect();
 
-    const { id } = params;
+    const { id } = await context.params; // ✅ REQUIRED IN NEXT.JS 15+
 
     if (!mongoose.isValidObjectId(id)) {
       return NextResponse.json(
@@ -106,7 +101,8 @@ export async function DELETE(_req: NextRequest, { params }: RouteParams) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("DELETE /api/vendors/:id error:", error);
+    console.error("DELETE error:", error);
+
     return NextResponse.json(
       { success: false, message: "Server error" },
       { status: 500 }
