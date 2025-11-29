@@ -11,40 +11,7 @@ interface RouteParams {
   };
 }
 
-export async function GET(_req: NextRequest, { params }: RouteParams) {
-  try {
-    await dbConnect();
 
-    const { id } = params;
-
-    if (!mongoose.isValidObjectId(id)) {
-      return NextResponse.json(
-        { success: false, message: "Invalid vendor ID" },
-        { status: 400 }
-      );
-    }
-
-    const vendor = await Vendor.findById(id);
-
-    if (!vendor) {
-      return NextResponse.json(
-        { success: false, message: "Vendor not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(
-      { success: true, data: vendor },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error("GET /api/vendors/:id error:", error);
-    return NextResponse.json(
-      { success: false, message: "Server error" },
-      { status: 500 }
-    );
-  }
-}
 
 // =====================
 // PUT /api/vendors/:id
