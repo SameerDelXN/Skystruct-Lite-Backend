@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 const ProjectTypeSchema = new Schema(
   {
     name: { type: String, required: true, unique: true },
+    image:{ type: String},
     category: { type: String }, // e.g. Residential / Commercial
     description: { type: String },
     createdBy: { type: Schema.Types.ObjectId, ref: "User" },

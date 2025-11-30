@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { name, description, category } = await req.json();
+    const { name, description, category,image } = await req.json();
 
     if (!name) {
       return NextResponse.json({ success: false, message: "Name is required" }, { status: 400 });
@@ -29,6 +29,7 @@ export async function POST(req: Request) {
       name,
       description,
       category,
+      image,
       createdBy: session._id,
     });
 
