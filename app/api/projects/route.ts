@@ -249,6 +249,7 @@ import User from "@/models/User";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { canAccess } from "@/utils/permissions";
+import "@/models/ProjectType";    
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 
