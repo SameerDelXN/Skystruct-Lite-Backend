@@ -25,7 +25,7 @@ const ProjectSchema = new Schema(
     engineers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     status: {
       type: String,
-      enum: ["ongoing", "completed", "paused"],
+  
       default: "ongoing",
     },
     versionDetails: {
