@@ -11,7 +11,7 @@ const UserSchema = new Schema(
     role: {
       type: String,
    
-      default: "admin",
+      default: "client",
     },
 
     // ✅ New Email Verification Fields
