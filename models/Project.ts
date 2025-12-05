@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const ProjectSchema = new Schema(
   {
     name: { type: String, required: true },
-    projectCode: { type: String, unique: true },
+    projectCode: { type: String },
     location: { type: String },
     description: { type: String },
     startDate: { type: Date },
@@ -28,6 +28,7 @@ const ProjectSchema = new Schema(
   
       default: "ongoing",
     },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User" },
     versionDetails: {
       currentVersion: { type: String },
       lastUpdated: { type: Date },

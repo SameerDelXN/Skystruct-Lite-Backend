@@ -103,7 +103,7 @@ export async function middleware(req: NextRequest) {
     : cookieToken;
 
   if (!token) {
-    return new NextResponse(JSON.stringify({ success: false, message: "Unauthorized" }), {
+    return new NextResponse(JSON.stringify({ success: false, message: "Unauthorized data" }), {
       status: 401,
       headers: corsHeaders,
     });

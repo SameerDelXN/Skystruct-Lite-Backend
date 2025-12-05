@@ -288,7 +288,9 @@ export async function POST(req: Request) {
   await dbConnect();
   const session = await getSession(req as any);
 
-  if (!session || !canAccess(session.role, ["admin", "manager"])) {
+  console.log("asdfe",session);
+
+  if (!session ) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
   }
 
@@ -303,13 +305,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const existing = await Project.findOne({ projectCode: body.projectCode });
-    if (existing) {
-      return NextResponse.json(
-        { success: false, message: "Project code already exists" },
-        { status: 400 }
-      );
-    }
+    // const existing = await Project.findOne({ projectCode: body.projectCode });
+    // if (existing) {
+    //   return NextResponse.json(
+    //     { success: false, message: "Project code already exists" },
+    //     { status: 400 }
+    //   );
+    // }
 
     // ✅ Step 1: Create or find client user
     let clientUser = await User.findOne({ email: body.clientEmail });
@@ -338,6 +340,7 @@ export async function POST(req: Request) {
     const project = await Project.create({
       ...body,
       manager: session._id,
+      createdBy:session._id,
       status: body.status || "ongoing",
     });
 
@@ -363,9 +366,9 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   await dbConnect();
   const session = await getSession(req as any);
-
-  if (!session || !canAccess(session.role, ["admin", "manager"])) {
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+console.log("asdfasdfe",session);
+  if (!session ) {
+    return NextResponse.json({ success: false, message: "Unauthorized data" }, { status: 403 });
   }
 
   try {
